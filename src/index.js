@@ -1,13 +1,4 @@
-// const BASE_URL = 'https://restcountries.com/v2/name/';
-// const searchQuery = '?fields=name,capital,population,flags,languages';
-
-// export function fetchCountries(countryName) {
-//   const url = `${BASE_URL}${countryName}${searchQuery}`;
-
-//   return fetch(url).then(response => {
-//     return response.json().catch(error => console.log(error));
-//   });
-// }
+import axios from 'axios';
 
 const inputQuery = document.querySelector('.js-search');
 inputQuery.addEventListener('submit', onSearch);
@@ -18,22 +9,20 @@ function onSearch(e) {
   console.log(query.value);
 }
 
+const API_KEY = 'a148ed5961285512fd3954af576af4a0';
+const BASE_URL = 'https://api.themoviedb.org/3';
+const TREND_URL = `${BASE_URL}/trending/movie/week`;
+const SEARCH_URL = `${BASE_URL}/search/movie`;
+const ID_URL = `${BASE_URL}/movie/`;
+
 async function movieTrendingApi() {
-  const BASE_URL = 'https://api.themoviedb.org/3';
-  const key = 'a148ed5961285512fd3954af576af4a0';
-
-  const url = `${BASE_URL}/movie/550?api_key=${key}&Media Type=move&
-Time Window=day`;
-
-  const response = await fetch(url);
-
-  console.log(response);
-
   try {
-    return await response.json();
+    const response = await axios.get(`${TREND_URL}?api_key=${API_KEY}`);
+    console.log(response.data.results);
+    return response;
   } catch (error) {
-    return console.log(error);
+    console.error(error);
   }
 }
 
-movieTrendingApi().then(data => console.log(data));
+movieTrendingApi();
