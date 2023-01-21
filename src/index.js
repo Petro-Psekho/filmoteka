@@ -15,10 +15,11 @@ const TREND_URL = `${BASE_URL}/trending/movie/week`;
 const SEARCH_URL = `${BASE_URL}/search/movie`;
 const ID_URL = `${BASE_URL}/movie/`;
 
-async function movieTrendingApi() {
+async function movieTrendingApi(poster_path, original_title) {
   try {
     const response = await axios.get(`${TREND_URL}?api_key=${API_KEY}`);
     console.log(response.data.results);
+
     return response;
   } catch (error) {
     console.error(error);
@@ -26,3 +27,20 @@ async function movieTrendingApi() {
 }
 
 movieTrendingApi();
+
+function rendersMarkup(trending) {
+  console.log(response);
+  const markup = response.data.results
+    .map(result => {
+      return `<div>
+                <img src="" alt="">
+                <h2></h2>
+                <p></p>
+              </div>`;
+    })
+    .join('');
+
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
+}
+
+// rendersMarkup();
