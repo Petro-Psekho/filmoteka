@@ -1,2 +1,0 @@
-document.querySelector(".js-search").addEventListener("submit",(function(e){e.preventDefault();const{query:o}=e.currentTarget;console.log(o.value)})),async function(){const e=await fetch("https://api.themoviedb.org/3/movie/550?api_key=a148ed5961285512fd3954af576af4a0&Media Type=move&\nTime Window=day");console.log(e);try{return await e.json()}catch(e){return console.log(e)}}().then((e=>console.log(e)));
-//# sourceMappingURL=index.d16350ed.js.map
