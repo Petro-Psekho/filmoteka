@@ -3,6 +3,8 @@ import axios from 'axios';
 const inputQuery = document.querySelector('.js-search');
 inputQuery.addEventListener('submit', onSearch);
 
+const trendingGallery = document.querySelector('.gallery');
+
 function onSearch(e) {
   e.preventDefault();
   const { query } = e.currentTarget;
@@ -15,32 +17,37 @@ const TREND_URL = `${BASE_URL}/trending/movie/week`;
 const SEARCH_URL = `${BASE_URL}/search/movie`;
 const ID_URL = `${BASE_URL}/movie/`;
 
-async function movieTrendingApi(poster_path, original_title) {
+async function movieTrending() {
   try {
     const response = await axios.get(`${TREND_URL}?api_key=${API_KEY}`);
-    console.log(response.data.results);
+    const arr = response.data;
 
-    return response;
+    console.log(arr.results);
+    console.log(arr.results[0]);
+    console.log(arr.results[0].poster_path);
+    console.log(arr.results[0].title);
+
+    return arr;
   } catch (error) {
     console.error(error);
   }
 }
 
-movieTrendingApi();
+movieTrending().then(rendersMarkup).catch(console.error());
 
-function rendersMarkup(trending) {
-  console.log(response);
-  const markup = response.data.results
+function rendersMarkup(arr) {
+  console.log('arr', arr.results);
+  const markup = arr.results
     .map(result => {
       return `<div>
-                <img src="" alt="">
-                <h2></h2>
+                <img src="https://www.themoviedb.org/t/p/w300${result.poster_path}" alt="">
+                <h2>${result.title}</h2>
                 <p></p>
               </div>`;
     })
     .join('');
 
-  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  trendingGallery.insertAdjacentHTML('beforeend', markup);
 }
 
 // rendersMarkup();
