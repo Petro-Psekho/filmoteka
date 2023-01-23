@@ -21,17 +21,7 @@ async function movieTrending() {
   try {
     const response = await axios.get(`${TREND_URL}?api_key=${API_KEY}`);
 
-    const arr = response.data;
-    // console.log(arr);
-    // console.log(arr.results);
-    // console.log(arr.results[0]);
-    // console.log(arr.results[0].poster_path);
-    // console.log(arr.results[0].title);
-    // console.log(arr.results[0].genre_ids[1]);
-
-    // const arrGenres = genres.data;
-    // console.log('genres', arrGenres.genres);
-    // console.log('genresID', arrGenres.genres[1].id);
+    const arr = response.data.results;
 
     // if (arr.results[0].genre_ids[1] === arrGenres.genres[1].id) {
     //   console.log('genresName', arrGenres.genres[1].name);
@@ -43,6 +33,8 @@ async function movieTrending() {
   }
 }
 
+foo();
+
 async function movieGenres() {
   try {
     const genres = await axios.get(
@@ -50,7 +42,7 @@ async function movieGenres() {
     );
 
     const arrGenres = genres.data;
-    console.log('genres', arrGenres.genres);
+    // console.log('genres', arrGenres.genres);
     // console.log('genresID', arrGenres.genres[1].id);
 
     // if (arr.results[0].genre_ids[1] === arrGenres.genres[1].id) {
@@ -63,16 +55,30 @@ async function movieGenres() {
   }
 }
 
-Promise.allSettled([movieGenres(), movieTrending()]).then(results =>
-  results.forEach(result => console.log('result.value.genres', result.value))
-);
+async function foo() {
+  const test = await movieGenres();
+  console.log('test', test.genres);
+  const test2 = await movieTrending();
+  console.log('test2', test2.results);
+
+  // return Object.assign(test, test2);
+  const test3 = Object.assign(test, test2);
+  console.log('test3', test3);
+
+  return test3;
+}
 
 movieTrending().then(rendersMarkup).catch(console.error());
 
-function rendersMarkup(arr) {
-  console.log('arr', arr.results);
+async function rendersMarkup(test3) {
+  // console.log('arr', arr.results);
 
-  const markup = arr.results
+  // const test = await movieGenres();
+  // const test2 = await movieTrending();
+  // const test3 = Object.assign(test, test2);
+  // console.log('test3', test3);
+
+  const markup = test3
     .map(result => {
       return `<li>
                 <article>
@@ -88,7 +94,6 @@ function rendersMarkup(arr) {
     .join('');
 
   trendingGallery.insertAdjacentHTML('beforeend', markup);
-  console.log(arr.results);
 }
 
 // rendersMarkup();
