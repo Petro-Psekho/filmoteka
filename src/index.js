@@ -39,13 +39,12 @@ async function movieGenres() {
 
     const arrGenres = genres.data;
 
+    console.log('arrGenres', arrGenres);
     return arrGenres;
   } catch (error) {
     console.error(error);
   }
 }
-
-let gen = '';
 
 async function compareObject() {
   const genersObj = await movieGenres();
@@ -57,14 +56,25 @@ async function compareObject() {
 
   console.log('arrObj', arrObj);
 
+  // let markupGeners = arrObj.reduce(function (html, id) {
+  //   console.log('id', id);
+
+  //   if (id.genre_ids === id.id) {
+  //     html += '<li>' + id.name + '</li>';
+  //   }
+
+  //   console.log(html);
+  //   return html;
+  // }, '');
+
   for (let i = 0; i < arrObj.length; i++) {
     if (i.genre_ids === i.id) {
-      let gen = genersObj.genres[i].name;
-      console.log(gen);
+      let gen = JSON.stringify(genersObj.genres[i].name);
+
+      console.log('gen', gen);
       return gen;
     }
   }
-  console.log('gen', gen);
 }
 
 compareObject();
