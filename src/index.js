@@ -23,7 +23,7 @@ async function movieTrending() {
 
     const arr = response.data;
 
-    console.log(arr);
+    // console.log(arr);
 
     return arr;
   } catch (error) {
@@ -45,22 +45,26 @@ async function movieGenres() {
   }
 }
 
+let gen = '';
+
 async function compareObject() {
   const genersObj = await movieGenres();
-  console.log('genersObj', genersObj.genres);
+  // console.log('genersObj', genersObj.genres);
   const trendingObj = await movieTrending();
-  console.log('trendingObj', trendingObj.results);
+  // console.log('trendingObj', trendingObj.results);
 
   let arrObj = [genersObj.genres, trendingObj.results];
 
-  console.log(arrObj);
+  console.log('arrObj', arrObj);
 
   for (let i = 0; i < arrObj.length; i++) {
     if (i.genre_ids === i.id) {
       let gen = genersObj.genres[i].name;
       console.log(gen);
+      return gen;
     }
   }
+  console.log('gen', gen);
 }
 
 compareObject();
