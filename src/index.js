@@ -21,19 +21,15 @@ async function movieTrending() {
   try {
     const response = await axios.get(`${TREND_URL}?api_key=${API_KEY}`);
 
-    const arr = response.data.results;
+    const arr = response.data;
 
-    // if (arr.results[0].genre_ids[1] === arrGenres.genres[1].id) {
-    //   console.log('genresName', arrGenres.genres[1].name);
-    // }
+    console.log(arr);
 
     return arr;
   } catch (error) {
     console.error(error);
   }
 }
-
-foo();
 
 async function movieGenres() {
   try {
@@ -42,12 +38,6 @@ async function movieGenres() {
     );
 
     const arrGenres = genres.data;
-    // console.log('genres', arrGenres.genres);
-    // console.log('genresID', arrGenres.genres[1].id);
-
-    // if (arr.results[0].genre_ids[1] === arrGenres.genres[1].id) {
-    //   console.log('genresName', arrGenres.genres[1].name);
-    // }
 
     return arrGenres;
   } catch (error) {
@@ -55,30 +45,30 @@ async function movieGenres() {
   }
 }
 
-async function foo() {
-  const test = await movieGenres();
-  console.log('test', test.genres);
-  const test2 = await movieTrending();
-  console.log('test2', test2.results);
+async function compareObject() {
+  const genersObj = await movieGenres();
+  console.log('genersObj', genersObj.genres);
+  const trendingObj = await movieTrending();
+  console.log('trendingObj', trendingObj.results);
 
-  // return Object.assign(test, test2);
-  const test3 = Object.assign(test, test2);
-  console.log('test3', test3);
+  let arrObj = [genersObj.genres, trendingObj.results];
 
-  return test3;
+  console.log(arrObj);
+
+  for (let i = 0; i < arrObj.length; i++) {
+    if (i.genre_ids === i.id) {
+      let gen = genersObj.genres[i].name;
+      console.log(gen);
+    }
+  }
 }
+
+compareObject();
 
 movieTrending().then(rendersMarkup).catch(console.error());
 
-async function rendersMarkup(test3) {
-  // console.log('arr', arr.results);
-
-  // const test = await movieGenres();
-  // const test2 = await movieTrending();
-  // const test3 = Object.assign(test, test2);
-  // console.log('test3', test3);
-
-  const markup = test3
+async function rendersMarkup(arr) {
+  const markup = arr.results
     .map(result => {
       return `<li>
                 <article>
