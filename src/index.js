@@ -1,10 +1,7 @@
 import axios from 'axios';
 axios.defaults.baseURL = 'https://api.themoviedb.org/3';
 
-const inputQuery = document.querySelector('.js-search');
-inputQuery.addEventListener('submit', onSearch);
-
-const trendingGallery = document.querySelector('.gallery');
+const trendingGallery = document.querySelector('.js-container');
 
 function onSearch(e) {
   e.preventDefault();
@@ -23,8 +20,6 @@ async function movieTrending() {
 
     const arr = response.data;
 
-    // console.log(arr);
-
     return arr;
   } catch (error) {
     console.error(error);
@@ -39,47 +34,48 @@ async function movieGenres() {
 
     const arrGenres = genres.data;
 
+    console.log('arrGenres', arrGenres);
     return arrGenres;
   } catch (error) {
     console.error(error);
   }
 }
 
-let gen = '';
-
 async function compareObject() {
   const genersObj = await movieGenres();
-  // console.log('genersObj', genersObj.genres);
   const trendingObj = await movieTrending();
-  // console.log('trendingObj', trendingObj.results);
 
   let arrObj = [genersObj.genres, trendingObj.results];
 
   console.log('arrObj', arrObj);
 
-  for (let i = 0; i < arrObj.length; i++) {
-    if (i.genre_ids === i.id) {
-      let gen = genersObj.genres[i].name;
-      console.log(gen);
-      return gen;
-    }
-  }
-  console.log('gen', gen);
+  return arrObj;
 }
 
-compareObject();
-
-movieTrending().then(rendersMarkup).catch(console.error());
+compareObject().then(rendersMarkup).catch(console.error());
 
 async function rendersMarkup(arr) {
-  const markup = arr.results
+  const arrData = arr[1];
+  const arrGen = arr[0];
+  console.log(arrData);
+  console.log(arrGen);
+
+  const murkUp = arrData
     .map(result => {
+      const gen = result.genre_ids.map(num => {
+        const findGen = arrGen.find(item => item.id === num);
+        return findGen;
+      });
+
+      // console.log(gen);
+      const newArrGen = gen.map(obj => obj.name);
+      console.log(newArrGen);
       return `<li>
                 <article>
                   <img src="https://www.themoviedb.org/t/p/w200${result.poster_path}" loading="lazy" alt="${result.title}">
                   <h2  data-id="${result.id}">${result.title}</h2>
                     <div class="js-genres">
-                       <p>${result.genre_ids}</p>
+                       <p>${newArrGen}</p>
                        <p>${result.release_date}</p>
                     </div>
               </article>
@@ -87,7 +83,5 @@ async function rendersMarkup(arr) {
     })
     .join('');
 
-  trendingGallery.insertAdjacentHTML('beforeend', markup);
+  trendingGallery.insertAdjacentHTML('beforeend', murkUp);
 }
-
-// rendersMarkup();
