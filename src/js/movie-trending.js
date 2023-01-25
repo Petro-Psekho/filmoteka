@@ -72,10 +72,16 @@ async function rendersMarkup(arr) {
       console.log(newArrGen);
       return `<li>
                 <article>
-                  <img class="movie-card__poster" src="https://www.themoviedb.org/t/p/w500${result.poster_path}" loading="lazy" alt="${result.title}">
-                  <h2 class="movie-card__title" data-id="${result.id}">${result.title}</h2>
+                  <img class="movie-card__poster" src="https://www.themoviedb.org/t/p/w500${
+                    result.poster_path
+                  }" loading="lazy" alt="${result.title}">
+                  <h2 class="movie-card__title" data-id="${result.id}">${
+        result.title
+      }</h2>
                     <div class="js-genres">
-                       <p class="movie-card__geners">${newArrGen} | ${result.release_date}</p>
+                       <p class="movie-card__geners">${newArrGen} | ${
+        result.release_date.split('-')[0]
+      }</p>
                     
                     </div>
               </article>
