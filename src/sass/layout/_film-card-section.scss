@@ -1,0 +1,21 @@
+.movie-card {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+  /* or 120% */
+
+  &__poster {
+    width: 395px;
+  }
+
+  &__title {
+    text-transform: uppercase;
+    color: #000000;
+  }
+
+  &__geners {
+    color: #ff6b08;
+  }
+}

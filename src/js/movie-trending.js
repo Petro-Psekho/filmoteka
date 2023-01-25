@@ -1,7 +1,7 @@
 import axios from 'axios';
 axios.defaults.baseURL = 'https://api.themoviedb.org/3';
 
-const trendingGallery = document.querySelector('.js-container');
+const trendingGallery = document.querySelector('.js-movie-card');
 
 function onSearch(e) {
   e.preventDefault();
@@ -72,11 +72,11 @@ async function rendersMarkup(arr) {
       console.log(newArrGen);
       return `<li>
                 <article>
-                  <img src="https://www.themoviedb.org/t/p/w200${result.poster_path}" loading="lazy" alt="${result.title}">
-                  <h2  data-id="${result.id}">${result.title}</h2>
+                  <img class="movie-card__poster" src="https://www.themoviedb.org/t/p/w500${result.poster_path}" loading="lazy" alt="${result.title}">
+                  <h2 class="movie-card__title" data-id="${result.id}">${result.title}</h2>
                     <div class="js-genres">
-                       <p>${newArrGen}</p>
-                       <p>${result.release_date}</p>
+                       <p class="movie-card__geners">${newArrGen} | ${result.release_date}</p>
+                    
                     </div>
               </article>
             </li>`;
