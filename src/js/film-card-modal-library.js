@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Loading } from 'notiflix/build/notiflix-loading-aio';
+
 import {
   handleAddToWatched,
   handleAddToQueue,
@@ -12,6 +13,7 @@ import {
   createMainTrailerLink,
 } from './get-trailers';
 import { getMoviePosters, createMoviePostersGallery } from './get-posters';
+import { onClickBtnWatched, onClickBtnOueue } from './library-movies';
 
 Loading.init({
   svgSize: '120px',
@@ -28,6 +30,8 @@ const watchedBtn = document.querySelector('.watched-btn');
 const queueBtn = document.querySelector('.queue-btn');
 const body = document.querySelector('body');
 const modalCard = document.querySelector('.modal-film-card');
+const watchedButtonInLibrary = document.querySelector('.js-btn-watched');
+const queueButtonInLibrary = document.querySelector('.js-btn-queue');
 const watchTrailerButton = document.querySelector('.js-trailer-btn');
 const trailerModal = document.querySelector('.backdrop-trailer');
 const trailerModalCloseBtn = document.querySelector('.close-trailer-modal-btn');
@@ -36,11 +40,20 @@ const posterGallery = document.querySelector('.gallery');
 
 list.addEventListener('click', onClick);
 
+let localDataFilmLengthWatched = 0;
+let localDataFilmLengthQueue = 0;
 async function onClick(evt) {
   try {
+    localDataFilmLengthWatched = JSON.parse(
+      localStorage.getItem('watched-movies')
+    ).length;
+    localDataFilmLengthQueue = JSON.parse(
+      localStorage.getItem('queue-movies')
+    ).length;
     evt.preventDefault();
     body.style.overflow = 'hidden';
     document.addEventListener('click', onBackdropClick);
+
     const target = evt.target.closest('li');
     const id = target.getAttribute('id');
     const obj = await getMovieById(id);
@@ -71,12 +84,14 @@ async function onClick(evt) {
         createMoviePostersGallery(response);
       }
     });
+
     isWatched();
     isQueue();
     Loading.remove(500);
     modal.classList.remove('is-hidden');
 
     document.addEventListener('keydown', onClose);
+
     closeBtn.addEventListener('click', onCloseClick);
 
     if (!modal.classList.contains('is-hidden')) {
@@ -97,19 +112,6 @@ function createMarkupForOne(obj) {
   let genresArr = obj.genres.map(obj => {
     return obj.name;
   });
-
-  let aboutDescription = obj.overview;
-
-  if (aboutDescription.length === Number(0)) {
-    aboutDescription =
-      'Currently description in unavailiable due to lack of information from producers';
-  }
-
-  if (genresArr.length === Number(0)) {
-    genresArr = 'Info is not specified';
-  } else {
-    genresArr = genresArr.join(', ');
-  }
 
   let ifPhotoTrue = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
 
@@ -140,13 +142,13 @@ function createMarkupForOne(obj) {
       </tr>
       <tr>
         <td class="characteristic td">Genre</td>
-        <td class="description">${genresArr}</td>
+        <td class="description">${genresArr.join(', ')}</td>
       </tr>
     </tbody>
     </table>
     <div class="single-trailer-wrapper"></div>
       <h3 class="description-title">About</h3>
-    <p class="description-text">${aboutDescription}</p>`;
+    <p class="description-text">${obj.overview}</p>`;
 }
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -163,7 +165,8 @@ async function getMovieById(id) {
 function onClose(evt) {
   if (evt.key === 'Escape') {
     modal.classList.add('is-hidden');
-    document.removeEventListener('click', onClose);
+    document.removeEventListener('keydown', onClose);
+    libraryRenderAfterMovieRemove();
     body.style.overflow = 'visible';
   }
 }
@@ -171,7 +174,7 @@ function onClose(evt) {
 function onCloseClick() {
   modal.classList.add('is-hidden');
   closeBtn.removeEventListener('click', onCloseClick);
-
+  libraryRenderAfterMovieRemove();
   body.style.overflow = 'visible';
 }
 
@@ -180,8 +183,26 @@ function onBackdropClick(evt) {
   if (target.className === 'backdrop') {
     modal.classList.add('is-hidden');
     document.removeEventListener('click', onBackdropClick);
-
+    libraryRenderAfterMovieRemove();
     body.style.overflow = 'visible';
+  }
+}
+
+function libraryRenderAfterMovieRemove() {
+  if (
+    (localDataFilmLengthWatched !==
+      JSON.parse(localStorage.getItem('watched-movies')).length) &
+    watchedButtonInLibrary.classList.contains('library-header__button--watched')
+  ) {
+    onClickBtnWatched();
+    // document.location.reload();
+  } else if (
+    (localDataFilmLengthQueue !==
+      JSON.parse(localStorage.getItem('queue-movies')).length) &
+    queueButtonInLibrary.classList.contains('library-header__button--queue')
+  ) {
+    onClickBtnOueue();
+    // document.location.reload();
   }
 }
 
@@ -216,6 +237,7 @@ function onCloseBtnTrailerModal(evt) {
   trailerModal.classList.add('is-hidden');
   trailerModalCloseBtn.removeEventListener('click', onCloseClick);
   body.style.overflow = 'visible';
+
   trailerCarousel.innerHTML = '';
   const modalPoster = document.querySelector('.modal-img');
   const id = modalPoster.getAttribute('id');
