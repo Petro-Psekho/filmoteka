@@ -70,7 +70,7 @@ async function rendersMarkup(arr) {
       // console.log(gen);
       const newArrGen = gen.map(obj => obj.name);
       console.log(newArrGen);
-      return `<li>
+      return `<li class="movie-card__list">
                 <article>
                   <img class="movie-card__poster" src="https://www.themoviedb.org/t/p/w500${
                     result.poster_path
