@@ -19,7 +19,7 @@ export async function getMoviePosters(movieId) {
 
 export function createMoviePostersGallery(response) {
   posterGallery.innerHTML = '';
-  const posterArr = response.slice(0, 14);
+  const posterArr = response.slice(0, 4);
   const markup = posterArr
     .map(response => {
       return `<a class="gallery__link" href="https://image.tmdb.org/t/p/w500/${response.file_path}"><img class="gallery__image" src="https://image.tmdb.org/t/p/w500/${response.file_path}" alt="${response.id} loading="lazy" width="50" height="30""/></a>`;
